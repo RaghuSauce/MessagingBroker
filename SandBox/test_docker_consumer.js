@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 
 var amqp = require('amqplib/callback_api');
+
 var args = process.argv.slice(2);
+
+
+
 amqp.connect('amqp://localhost', function(err, conn) {
     conn.createChannel(function(err, ch) {
-        var ex = 'PinkTest';
+        var ex = 'testieExchange';
 
-        ch.assertExchange(ex, 'direct', {durable: true});
+        ch.assertExchange(ex, 'direct', {durable: false});
 
-        ch.assertQueue('Blue', {exclusive: false}, function(err, q) {
+        ch.assertQueue('test', {exclusive: true}, function(err, q) {
             console.log(' [*] Waiting for logs. To exit press CTRL+C');
-
-            ch.bindQueue(q.queue,ex);
+            ch.bindQueue('test',ex,'');
 
             // args.forEach(function(severity) {
             //     ch.bindQueue(q.queue, ex, severity);
